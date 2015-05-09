@@ -3,14 +3,14 @@
 #include <iostream>
 #include <cmath>
 // #include "Obj.h"
-
+#define DIM 40
 using namespace std;
 class Spaceship : public Obj
 {
 private:
-	const int DIM = 40;
 	int angle;
 
+	int v;
 	SDL_Surface* sprite1;
 	SDL_Surface* sprite2;
 
@@ -21,6 +21,7 @@ public:
 
 	Spaceship(){
 		Obj();
+		this->setV(4);
 		this->angle = 0;
 		this->setSprite ("img/goku1.png");
 		this->setPos(0,0,DIM,DIM);
@@ -33,6 +34,7 @@ public:
 
 	Spaceship(SDL_Surface *sprite,SDL_Rect pos){
 		Obj();
+		this->setV(4);
 		this->angle = 0;
 		this->setSprite(sprite);
 		this->setPos (pos.x,pos.y,pos.w,pos.h);
@@ -55,7 +57,7 @@ public:
 	}
 
 	void moveShip(SDL_Surface *screen){
-		int v = 4;
+		int v = this->getV();
 		const double pi = 3.1415926535897;
 		// this->setPos( this->getPos()->x+this->getVector()[0] ,this->getPos()->y+this->getVector()[1]);
 		this->setVector(v*cos(pi*this->angle/180),-v*sin(pi*this->angle/180));
@@ -65,6 +67,13 @@ public:
 		// cout << "x "<<this->getVector()[0]<< " y "<<this->getVector()[1] << endl;
 		this->move(screen);
 
+	}
+
+	void setV(int v){
+		this->v = v;
+	}
+	int getV(){
+		return this->v;
 	}
 
 	void atirar(){

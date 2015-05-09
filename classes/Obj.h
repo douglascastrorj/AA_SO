@@ -5,6 +5,8 @@
 #include <cmath>
 
 
+#define MAX_SPEED 5
+
 using namespace std;
 class Obj
 {
@@ -12,7 +14,7 @@ class Obj
 	SDL_Rect pos; //position on the screen
 	SDL_Surface* sprite; //image of the obj
 	int vector[2];
-
+	int maxVel;
 
 
 public:
@@ -60,8 +62,8 @@ public:
 	
 
 	void setVector(int x,int y){
-		this->vector[0] = x;
-		this->vector[1] = y;
+		this->vector[0] = (x%MAX_SPEED)+1;
+		this->vector[1] = (y%MAX_SPEED)+1;
 	}
 
 	int* getVector(){

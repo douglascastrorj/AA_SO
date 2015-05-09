@@ -1,21 +1,27 @@
 #include <iostream>
-#include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
-#include "SDL/SDL_mixer.h"
-#include "SDL/SDL_ttf.h"
+#include <string>
 #include "time.h"
-#include "classes/Obj.h"
-#include "classes/Asteroid.h"
-#include "classes/Spaceship.h"
-#include "thread_functions.cpp"
 #include <cstdlib>
 #include <pthread.h>
 
 
+
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
+#include "SDL/SDL_mixer.h"
+#include "SDL/SDL_ttf.h"
+
+
+#include "classes/Obj.h"
+#include "classes/Asteroid.h"
+#include "classes/Spaceship.h"
+#include "thread_functions.cpp"
+
+
 // CONSTANTS
 
-#define ASTEROID_MAX_SPEED 3
-const int FPS = 60;
+
+const int FPS = 80;
 
 
 SDL_Surface *screen = NULL;
@@ -33,13 +39,14 @@ int main(){
 
 
 	//CREATING THE RANDOM ASTEROIDS
-	int nAsteroid = 5;
+	int nAsteroid = 10;
 	Asteroid *asteroides = new Asteroid[nAsteroid];
 	for(int i=0;i<nAsteroid;i++){
-		string s = "img/"+to_string( (i%nAsteroid)+1) +".png";
+		string s = "img/"+to_string( (i%7)+1) +".png";
+		// string s = "img/1.png";
 		cout << s <<endl;
 		asteroides[i].setSprite(s);
-		asteroides[i].setVector(rand()%ASTEROID_MAX_SPEED,rand()%ASTEROID_MAX_SPEED);
+		asteroides[i].setVector(rand()%MAX_SPEED-rand()%MAX_SPEED,rand()%MAX_SPEED-rand()%MAX_SPEED);
 		asteroides[i].setPos(rand()%screen->w,rand()%screen->h);
 	}
 
@@ -51,30 +58,55 @@ int main(){
 	bool running = true;
 
 	//creating the threads for running each asteroid in
-	pthread_t threads[nAsteroid];
-	struct thread_data td[nAsteroid];
+	// pthread_t threads[nAsteroid];
+	// struct thread_data td[nAsteroid];
+	// int rc;
+ //   	int i;
+	// for( i=0; i < nAsteroid; i++ ){
+
+	// 	td[i].thread_id = i;
+ //      	td[i].a = &asteroides[i];
+ //      	td[i].running = &running;
+ //      	td[i].FPS = FPS;
+ //      	td[i].nAsteroides = nAsteroid;
+ //      	td[i].player = player;
+ //      	td[i].asteroides = asteroides;
+
+
+	// 	cout <<"main() : creating thread, " << i << endl;
+	// 	rc = pthread_create(&threads[i], NULL,move_asteroid_thread,  (void *)&td[i]);
+	// 	// pthread_join(threads[i], NULL /* void ** return value could go here */);
+
+
+	// 	if (rc){
+	// 		cout << "Error:unable to create thread," << rc << endl;
+	// 		exit(-1);
+	// 	}
+	// }
+
+	//creating the threads for running each asteroid in
+	pthread_t thread;
+	struct thread_data td;
 	int rc;
    	int i;
-	for( i=0; i < nAsteroid; i++ ){
 
-		td[i].thread_id = i;
-      	td[i].a = &asteroides[i];
-      	td[i].running = &running;
-      	td[i].FPS = FPS;
-      	td[i].nAsteroides = nAsteroid;
-      	td[i].player = player;
-      	td[i].asteroides = asteroides;
-
-
-		cout <<"main() : creating thread, " << i << endl;
-		rc = pthread_create(&threads[i], NULL,move_asteroid_thread,  (void *)&td[i]);
-		// pthread_join(threads[i], NULL /* void ** return value could go here */);
+	td.thread_id = 0;
+  	td.a = &asteroides[0];
+  	td.running = &running;
+  	td.FPS = FPS;
+  	td.nAsteroides = nAsteroid;
+  	td.player = player;
+  	td.asteroides = asteroides;
 
 
-		if (rc){
-			cout << "Error:unable to create thread," << rc << endl;
-			exit(-1);
-		}
+	cout <<"main() : creating thread, " << i << endl;
+	rc = pthread_create(&thread, NULL,move_asteroides_thread,  (void *)&td);
+	// pthread_join(threads[i], NULL /* void ** return value could go here */);
+
+
+	if (rc){
+		cout << "Error:unable to create thread," << rc << endl;
+		exit(-1);
 	}
 
 	
